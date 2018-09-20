@@ -93,7 +93,9 @@ def update() {
 			runEvery30Minutes(refresh)
 			log.info "Refresh Scheduled for every 30 minutes"
 	}
-	runIn(5, refresh)}
+	runIn(5, refresh)
+}
+
 //	----- BASIC PLUG COMMANDS ------------------------------------
 def on() {
 	sendCmdtoServer("on")
@@ -103,7 +105,7 @@ def off() {
 	sendCmdtoServer("off")
 }
 
-def commandResponse(response){
+def commandResponse(response) {
    	if (response.headers["cmd-response"] == "OK") {
         def cmd = response.headers["tuyapi-onoff"]
       	sendEvent(name: "switch", value: cmd)
@@ -113,25 +115,23 @@ def commandResponse(response){
     }
 }
 
-def poll(){
-	//sendEvent(name: "switch", value: "waiting", isStateChange: true)
+def poll() {
 	sendCmdtoServer("status")
 }
 //	----- REFRESH ------------------------------------------------
-def refresh(){
-	//sendEvent(name: "switch", value: "waiting", isStateChange: true)
+def refresh() {
 	sendCmdtoServer("status")
 }
 
 //	----- SEND COMMAND DATA TO THE SERVER -------------------------------------
-private sendCmdtoServer(command){
+private sendCmdtoServer(command) {
 	def headers = [:] 
 	headers.put("HOST", "$gatewayIP:8083")	//	SET TO VALUE IN JAVA SCRIPT PKG.
 	headers.put("tuyapi-devid", deviceID)
 	headers.put("tuyapi-localkey", localKey)
 	headers.put("tuyapi-command", command)
-	sendHubCommand(new physicalgraph.device.HubAction([
-		headers: headers],
+	sendHubCommand(new physicalgraph.device.HubAction(
+		[headers: headers],
 		device.deviceNetworkId,
 		[callback: commandResponse]
 	))
