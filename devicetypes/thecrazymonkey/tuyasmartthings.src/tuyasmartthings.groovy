@@ -113,6 +113,10 @@ def commandResponse(response){
     }
 }
 
+def poll(){
+	//sendEvent(name: "switch", value: "waiting", isStateChange: true)
+	sendCmdtoServer("status")
+}
 //	----- REFRESH ------------------------------------------------
 def refresh(){
 	//sendEvent(name: "switch", value: "waiting", isStateChange: true)
