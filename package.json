@@ -1,0 +1,22 @@
+{
+  "name": "tuyasmartthings",
+  "version": "1.0.0",
+  "description": "Local server to proxy Tuya requests from SmartThings to smart plugs",
+  "main": "TuyAPI_Server_v1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thecrazymonkey/TuyaSmartthings.git"
+  },
+  "author": "thecrazymonkey",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/thecrazymonkey/TuyaSmartthings/issues"
+  },
+  "homepage": "https://github.com/thecrazymonkey/TuyaSmartthings#readme",
+  "dependencies": {
+    "tuyapi": "github:codetheweb/tuyapi"
+  }
+}

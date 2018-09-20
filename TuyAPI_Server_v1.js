@@ -26,7 +26,7 @@ function onRequest(request, response) {
 	let localKey = request.headers["tuyapi-localkey"]
 	let command = request.headers["tuyapi-command"]
 
-	console.log(request)
+	console.log(request.headers)
 	let tuya = new TuyaDevice({
 		id: deviceID,
 		key: localKey
