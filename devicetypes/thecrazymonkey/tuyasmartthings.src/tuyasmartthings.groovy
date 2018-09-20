@@ -1,27 +1,27 @@
-/*
-TuyAPI SmartPlug Device Handler
-
-Derived from work of
-	TP-Link HS Series Device Handler
-	Copyright 2018 Dave Gutheinz, 
-	codetheweb,
-	blawson327
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
-		http://www.apache.org/licenses/LICENSE-2.0
-		
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-Supported models and functions:  This device supports smart plugs that use the Tuya Smart Life app
-
-Update History
-01-04-2018	- Initial release
+/**
+ * TuyAPI SmartPlug Device Handler
+ *
+ * Derived from work of
+ *	TP-Link HS Series Device Handler
+ *	Copyright 2018 Dave Gutheinz, 
+ *	codetheweb,
+ *	blawson327
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *		
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *
+ * Supported models and functions:  This device supports smart plugs that use the Tuya Smart Life app
+ *
+ * Update History
+ * 01-04-2018	- Initial release
 */
 metadata {
 	definition (name: "TuyAPI Smart Plug", namespace: "thecrazymonkey", author: "Ivan Kunz") {
 		capability "Switch"
-		capability "refresh"
-		capability "polling"
+		capability "Refresh"
+		capability "Polling"
 		capability "Sensor"
 		capability "Actuator"
 	}
