@@ -3,8 +3,8 @@ TuyAPI SmartPlug Device Handler
 
 Derived from
 	TP-Link HS Series Device Handler
-	Copyright 2017 Dave Gutheinz
-
+	Copyright 2018 Dave Gutheinz, codetheweb
+    
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
 		http://www.apache.org/licenses/LICENSE-2.0
@@ -17,13 +17,12 @@ Update History
 01-04-2018	- Initial release
 */
 metadata {
-	definition (name: "TuyAPI Smart Plug", namespace: "blawson327", author: "Ben Lawson") {
+	definition (name: "TuyAPI Smart Plug", namespace: "thecrazymonkey", author: "Ivan Kunz") {
 		capability "Switch"
 		capability "refresh"
 		capability "polling"
 		capability "Sensor"
 		capability "Actuator"
-		command "setCurrentDate"
 	}
 	tiles(scale: 2) {
 		standardTile("switch", "device.switch", width: 6, height: 4, canChangeIcon: true) {
@@ -37,75 +36,91 @@ metadata {
 			state ("default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh")
 		}		 
 		main("switch")
-		details("switch", "power", "refresh")
+		details("switch", "refresh")
+	}
+	def rates = [:]
+	rates << ["1" : "Refresh every minutes (Not Recommended)"]
+	rates << ["5" : "Refresh every 5 minutes"]
+	rates << ["10" : "Refresh every 10 minutes"]
+	rates << ["15" : "Refresh every 15 minutes"]
+	rates << ["30" : "Refresh every 30 minutes (Recommended)"]
+
+	preferences {
+	    input(name: "gatewayIP", type: "text", title: "Gateway IP", required: true, displayDuringSetup: true)
+		input(name: "deviceID", type: "text", title: "Device ID", required: true, displayDuringSetup: true)
+		input(name: "localKey", type: "text", title: "Local Key", required: true, displayDuringSetup: true)
+		input(name: "refreshRate", type: "enum", title: "Refresh Rate", options: rates, description: "Select Refresh Rate", required: false)
 	}
 }
-preferences {
-	input(name: "deviceIP", type: "text", title: "Device IP", required: true, displayDuringSetup: true)
-	input(name: "gatewayIP", type: "text", title: "Gateway IP", required: true, displayDuringSetup: true)
-	input(name: "deviceID", type: "text", title: "Device ID", required: true, displayDuringSetup: true)
-	input(name: "localKey", type: "text", title: "Local Key", required: true, displayDuringSetup: true)
-}
-
 def installed() {
-	updated()
+	update()
 }
 
 def updated() {
-	unschedule()
-	runEvery15Minutes(refresh)
-	runIn(2, refresh)
+	runIn(2, update)
 }
+
+def update() {
+	unschedule()
+	switch(refreshRate) {
+		case "1":
+			runEvery1Minute(refresh)
+			log.info "Refresh Scheduled for every minute"
+			break
+		case "5":
+			runEvery5Minutes(refresh)
+			log.info "Refresh Scheduled for every 5 minutes"
+			break
+		case "10":
+			runEvery10Minutes(refresh)
+			log.info "Refresh Scheduled for every 10 minutes"
+			break
+		case "15":
+			runEvery15Minutes(refresh)
+			log.info "Refresh Scheduled for every 15 minutes"
+			break
+		default:
+			runEvery30Minutes(refresh)
+			log.info "Refresh Scheduled for every 30 minutes"
+	}
+	runIn(5, refresh)}
 //	----- BASIC PLUG COMMANDS ------------------------------------
 def on() {
-	sendCmdtoServer("on", "deviceCommand", "onOffResponse")
+	sendCmdtoServer("on")
 }
 
 def off() {
-	sendCmdtoServer("off", "deviceCommand", "onOffResponse")
+	sendCmdtoServer("off")
 }
 
-def onOffResponse(response){
+def commandResponse(response){
 	if (response.headers["cmd-response"] == "TcpTimeout") {
 		log.error "$device.name $device.label: Communications Error"
 		sendEvent(name: "switch", value: "offline", descriptionText: "ERROR - OffLine - mod onOffResponse")
 	} else {
     	if (response.headers["cmd-response"] == "true") {
             def cmd = response.headers["tuyapi-onoff"]
-        	sendEvent(name: "switch", value: cmd, isStateChange: true)
-            }
+        	sendEvent(name: "switch", value: cmd)
+        }
     }
-	//refresh()
 }
 
 //	----- REFRESH ------------------------------------------------
 def refresh(){
 	//sendEvent(name: "switch", value: "waiting", isStateChange: true)
-	sendCmdtoServer("status", "deviceCommand", "refreshResponse")
-}
-def refreshResponse(response){
-	if (response.headers["cmd-response"] == "TcpTimeout") {
-		log.error "$device.name $device.label: Communications Error"
-		sendEvent(name: "switch", value: "offline", descriptionText: "ERROR - OffLine - mod onOffResponse")
-	} else {
-        def status = response.headers["cmd-response"]
-		log.info "${device.name} ${device.label}: Power: ${status}"
-		sendEvent(name: "switch", value: status)
-	}
+	sendCmdtoServer("status")
 }
 
 //	----- SEND COMMAND DATA TO THE SERVER -------------------------------------
-private sendCmdtoServer(command, hubCommand, action){
+private sendCmdtoServer(command){
 	def headers = [:] 
 	headers.put("HOST", "$gatewayIP:8083")	//	SET TO VALUE IN JAVA SCRIPT PKG.
-	headers.put("tuyapi-ip", deviceIP)
 	headers.put("tuyapi-devid", deviceID)
 	headers.put("tuyapi-localkey", localKey)
 	headers.put("tuyapi-command", command)
-	headers.put("command", hubCommand)
 	sendHubCommand(new physicalgraph.device.HubAction([
 		headers: headers],
 		device.deviceNetworkId,
-		[callback: action]
+		[callback: commandResponse]
 	))
 }
