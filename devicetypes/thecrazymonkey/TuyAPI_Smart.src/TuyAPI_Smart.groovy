@@ -26,16 +26,25 @@ metadata {
 		capability "Actuator"
 	}
 	tiles(scale: 2) {
-		standardTile("switch", "device.switch", width: 6, height: 4, canChangeIcon: true) {
-        	state "on", label:'${name}', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#00a0dc",nextState:"turningOff"
-			state "off", label:'${name}', action:"switch.on", icon:"st.switch.off", backgroundColor:"#ffffff",nextState:"waiting"
-			state "turningOff", label:'waiting', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#15EE10",nextState:"waiting"
-			state "waiting", label:'${name}', action:"switch.on", icon:"st.switches.switch.on", backgroundColor:"#15EE10",nextState:"on"
-			state "offline", label:'Comms Error', action:"switch.on", icon:"st.switch.off", backgroundColor:"#e86d13",nextState:"waiting"
+		multiAttributeTile(name:"switch", type: "lighting", width: 6, height: 4, canChangeIcon: true){
+			tileAttribute ("device.switch", key: "PRIMARY_CONTROL") {
+				attributeState "on", label:'${name}', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#00a0dc",
+				nextState:"waiting"
+				attributeState "off", label:'${name}', action:"switch.on", icon:"st.switches.switch.off", backgroundColor:"#ffffff",
+				nextState:"waiting"
+				attributeState "waiting", label:'${name}', action:"switch.on", icon:"st.switches.switch.off", backgroundColor:"#15EE10",
+				nextState:"waiting"
+				attributeState "commsError", label:'Comms Error', action:"switch.on", icon:"st.switches.switch.off", backgroundColor:"#e86d13",
+				nextState:"waiting"
+            }
+ 			tileAttribute ("deviceError", key: "SECONDARY_CONTROL") {
+				attributeState "deviceError", label: '${currentValue}'
+			}
 		}
-		standardTile("refresh", "capability.refresh", width: 3, height: 2,  decoration: "flat") {
-			state ("default", label:"Refresh", action:"refresh.refresh", icon:"st.secondary.refresh")
-		}		 
+		standardTile("refresh", "capability.refresh", width: 2, height: 1,  decoration: "flat") {
+			state "default", label:"Refresh", action:"refresh.refresh"
+		}
+        
 		main("switch")
 		details("switch", "refresh")
 	}
@@ -100,7 +109,7 @@ def commandResponse(response){
       	sendEvent(name: "switch", value: cmd)
     } else {
 		log.error "$device.name $device.label: Some Error : $response.headers['cmd-response']"
-		sendEvent(name: "switch", value: "offline", descriptionText: "ERROR - OffLine - mod onOffResponse")
+		sendEvent(name: "switch", value: "comsError", descriptionText: "ERROR - OffLine - mod onOffResponse")
     }
 }
 
