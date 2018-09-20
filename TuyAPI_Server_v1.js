@@ -12,8 +12,6 @@ console.log("Node.js Version Detected:   " + process.version)
 
 //---- Program set up and global variables -------------------------
 const http = require('http')
-const net = require('net')
-const fs = require('fs')
 const TuyaDevice = require('tuyapi')
 const hubPort = 8083
 let server = http.createServer(onRequest)
@@ -28,23 +26,21 @@ function onRequest(request, response) {
 	let localKey = request.headers["tuyapi-localkey"]
 	let command = request.headers["tuyapi-command"]
 
-	let cmdRcvd = "\n\r" + new Date() + "\r\nIP: " + deviceIP + " sent command " + command
-	console.log(" ")
-	console.log(cmdRcvd)
+	console.log(request)
 	let tuya = new TuyaDevice({
 		id: deviceID,
 		key: localKey
 	});
 	// resolve ip
 	tuya.resolveId().then(() => { 
-		switch (tuyapi-command) {
+		switch (command) {
 			case "on":
 			case "off":
 				tuya.get().then(status => {
 					console.log('Current status: ' + status);
-					let setState = (tuyapi-command === "on")
+					let setState = (command === "on")
 					if (setState != status) {
-	 					tuya.set({ set: setState }).then(result => {
+						tuya.set({ set: setState }).then(result => {
 							console.log('Result of setting status to ' + setState + ': ' + result);
 							response.setHeader("cmd-response", "OK");
 							response.setHeader("onoff", setState ? "on" : "off");
@@ -83,7 +79,7 @@ function onRequest(request, response) {
 			default:
 				response.setHeader("cmd-response", "InvalidHubCmd")
 				response.end()
-				console.log("Invalid Command from IP" + deviceIP)
+				console.log("Invalid Command : " + command)
 		}
 	}).catch(reason => {
 		response.setHeader("cmd-response", reason);
