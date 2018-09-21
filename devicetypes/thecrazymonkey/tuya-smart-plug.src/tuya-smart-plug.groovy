@@ -1,5 +1,5 @@
 /**
- * TuyAPI SmartPlug Device Handler
+ * Tuya Smart Plug Device Handler
  *
  * Derived from work of
  *	TP-Link HS Series Device Handler
@@ -18,7 +18,7 @@
  * 01-04-2018	- Initial release
 */
 metadata {
-	definition (name: "TuyAPI Smart Plug", namespace: "thecrazymonkey", author: "Ivan Kunz") {
+	definition (name: "Tuya Smart Plug", namespace: "thecrazymonkey", author: "Ivan Kunz") {
 		capability "Switch"
 		capability "Refresh"
 		capability "Polling"
