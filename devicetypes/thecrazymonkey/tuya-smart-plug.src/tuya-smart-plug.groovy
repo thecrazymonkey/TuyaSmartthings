@@ -93,7 +93,6 @@ def update() {
 			runEvery30Minutes(refresh)
 			log.info "Refresh Scheduled for every 30 minutes"
 	}
-	runIn(5, refresh)
 }
 
 //	----- BASIC PLUG COMMANDS ------------------------------------
