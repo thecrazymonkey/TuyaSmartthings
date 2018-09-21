@@ -49,7 +49,7 @@ metadata {
 		details(["switch", "refresh"])
 	}
 	def rates = [:]
-	rates << ["1" : "Refresh every minutes (Not Recommended)"]
+	rates << ["1" : "Refresh every minute (Not Recommended)"]
 	rates << ["5" : "Refresh every 5 minutes"]
 	rates << ["10" : "Refresh every 10 minutes"]
 	rates << ["15" : "Refresh every 15 minutes"]
