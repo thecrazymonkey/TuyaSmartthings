@@ -105,22 +105,22 @@ def off() {
 	sendCmdtoServer("off")
 }
 
-def commandResponse(response) {
-   	if (response.headers["cmd-response"] == "OK") {
-        def cmd = response.headers["tuyapi-onoff"]
-      	sendEvent(name: "switch", value: cmd)
-    } else {
-		log.error "$device.name $device.label: Some Error : $response.headers['cmd-response']"
-		sendEvent(name: "switch", value: "comsError", descriptionText: "ERROR - OffLine - mod onOffResponse")
-    }
-}
-
 def poll() {
 	sendCmdtoServer("status")
 }
 //	----- REFRESH ------------------------------------------------
 def refresh() {
 	sendCmdtoServer("status")
+}
+
+def commandResponse(response) {
+   	if (response.headers["cmd-response"] == "OK") {
+        def cmd = response.headers["onoff"]
+      	sendEvent(name: "switch", value: cmd)
+    } else {
+		log.error "$device.name $device.label: Some Error : $response.headers['cmd-response']"
+		sendEvent(name: "switch", value: "offline", descriptionText: "ERROR - OffLine - mod onOffResponse")
+    }
 }
 
 //	----- SEND COMMAND DATA TO THE SERVER -------------------------------------
