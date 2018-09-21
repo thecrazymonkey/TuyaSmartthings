@@ -114,8 +114,10 @@ def refresh() {
 }
 
 def commandResponse(response) {
+	log.info "Received response : $response.headers["cmd-response"]"
    	if (response.headers["cmd-response"] == "OK") {
         def cmd = response.headers["onoff"]
+ 		log.info "Switch is  : $response.headers["onoff"]"
       	sendEvent(name: "switch", value: cmd)
     } else {
 		log.error "$device.name $device.label: Some Error : $response.headers['cmd-response']"
@@ -126,6 +128,7 @@ def commandResponse(response) {
 //	----- SEND COMMAND DATA TO THE SERVER -------------------------------------
 private sendCmdtoServer(command) {
 	def headers = [:] 
+	log.info "Sending command : $command"
 	headers.put("HOST", "$gatewayIP:8083")	//	SET TO VALUE IN JAVA SCRIPT PKG.
 	headers.put("tuyapi-devid", deviceID)
 	headers.put("tuyapi-localkey", localKey)
