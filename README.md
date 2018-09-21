@@ -1,6 +1,6 @@
 # TuyaSmartthings
 
-Currently PARTIALLY functional SmartThings device handler and node.js script for TuyAPI supported devices
+Functional SmartThings device handler and node.js script for TuyAPI supported smart plugs
 
 ## Requires
 
@@ -8,7 +8,7 @@ Currently PARTIALLY functional SmartThings device handler and node.js script for
    - npm install codetheweb/tuyapi
    
 2. DevID and localKey
-   - see one of the links below in order to find your specific keys. I used Android ADB to find the localkey(no root required)
+   - see one of the links below in order to find your specific keys. I used the cli method developed by codetheweb
 
 Device Handler and Node script hacked together using DaveGut's TPLink script as a starting point.
 
