@@ -117,7 +117,7 @@ def commandResponse(response) {
 	log.info "Received response : $response.headers['cmd-response']"
    	if (response.headers["cmd-response"] == "OK") {
         def cmd = response.headers["onoff"]
- 		log.info "Switch is  : $response.headers["onoff"]"
+ 		log.info "Switch is  : $response.headers['onoff']"
       	sendEvent(name: "switch", value: cmd)
     } else {
 		log.error "$device.name $device.label: Some Error : $response.headers['cmd-response']"
