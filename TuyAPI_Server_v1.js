@@ -35,7 +35,7 @@ function onRequest(request, response) {
 	tuya.resolveId().then(() => { 
 		switch (command) {
 			case "on":
-			case "off":
+			case "off": {
 				let setState = (command === "on")
 				tuya.set({ set: setState }).then(result => {
 					console.log('Result of setting status to ' + setState + ': ' + result);
@@ -50,6 +50,7 @@ function onRequest(request, response) {
 					console.log("Error : " + reason)
 				});
 				break
+			}
 			case "status":
 				tuya.get().then(status => {
 					response.setHeader("cmd-response", "OK");
