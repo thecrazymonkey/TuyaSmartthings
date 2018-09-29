@@ -14,7 +14,7 @@ console.log("Node.js Version Detected:   " + process.version)
 const http = require('http')
 const TuyaDevice = require('tuyapi')
 const hubPort = 8083
-let server = http.createServer(onRequest)
+const server = http.createServer(onRequest)
 
 //---- Start the HTTP Server Listening to SmartThings --------------
 server.listen(hubPort)
@@ -36,28 +36,14 @@ function onRequest(request, response) {
 		switch (command) {
 			case "on":
 			case "off":
-				tuya.get().then(status => {
-					console.log('Current status: ' + status);
-					let setState = (command === "on")
-					if (setState != status) {
-						tuya.set({ set: setState }).then(result => {
-							console.log('Result of setting status to ' + setState + ': ' + result);
-							response.setHeader("cmd-response", "OK");
-							response.setHeader("onoff", setState ? "on" : "off");
-							console.log("Status (" + status + ") sent to SmartThings.");
-							response.end();
-							return;
-						}).catch(reason => {
-							response.setHeader("cmd-response", reason);
-							response.end();
-							console.log("Error : " + reason)
-						});
-					} else {
-						response.setHeader("cmd-response", "OK");
-						response.setHeader("onoff", status ? "on" : "off");
-						console.log("Status (" + status + ") sent to SmartThings.");
-						response.end();
-					}
+				let setState = (command === "on")
+				tuya.set({ set: setState }).then(result => {
+					console.log('Result of setting status to ' + setState + ': ' + result);
+					response.setHeader("cmd-response", "OK");
+					response.setHeader("onoff", setState ? "on" : "off");
+					console.log("Status (" + (setState ? "on" : "off") + ") sent to SmartThings.");
+					response.end();
+					return;
 				}).catch(reason => {
 					response.setHeader("cmd-response", reason);
 					response.end();
